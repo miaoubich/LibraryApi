@@ -1,6 +1,7 @@
 package net.miaoubich.service;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -126,5 +127,20 @@ public class BookService {
 		List<Book> books = findAllBooks();
 		return books.stream().min(Comparator.comparing(Book::getPrice));
 	}
-	
+
+	public List<Book> sortBooksByPrice() {
+		List<Book> books = findAllBooks();
+		Collections.sort(books, (b1, b2) -> {
+			return b1.getPrice().compareTo(b2.getPrice());
+		});
+		return books;
+	}
+
+	public List<Book> sortBooksByName() {
+		List<Book> books = findAllBooks();
+		Collections.sort(books, (b1, b2) -> {
+			return b1.getBookName().compareTo(b2.getBookName());
+		});
+		return books;
+	}
 }

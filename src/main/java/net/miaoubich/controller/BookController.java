@@ -89,4 +89,16 @@ public class BookController {
 		Optional<Book> books = bookService.getTheCheapestBook();
 		return new ResponseEntity<Optional<Book>>(books, HttpStatus.FOUND);
 	}
+	
+	@GetMapping("/sort-byPrice")
+	public ResponseEntity<List<Book>> sortBooksByPrice(){
+		List<Book> books = bookService.sortBooksByPrice();
+		return new ResponseEntity<List<Book>>(books, HttpStatus.FOUND);
+	}
+	
+	@GetMapping("/sort-byName")
+	public ResponseEntity<List<Book>> sortBooksByBookName(){
+		List<Book> books = bookService.sortBooksByName();
+		return new ResponseEntity<List<Book>>(books, HttpStatus.FOUND);
+	}
 }
