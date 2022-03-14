@@ -91,7 +91,7 @@ public class BookController {
 	}
 	
 	@GetMapping("/sort-byPrice")
-	public ResponseEntity<List<Book>> sortBooksByPrice(){
+	public ResponseEntity<List<Book>> sortBooksByPrice2(){
 		List<Book> books = bookService.sortBooksByPrice();
 		return new ResponseEntity<List<Book>>(books, HttpStatus.FOUND);
 	}

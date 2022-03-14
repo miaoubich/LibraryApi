@@ -135,6 +135,11 @@ public class BookService {
 		});
 		return books;
 	}
+	
+	public List<Book> sortBooksByPrice2() {
+		List<Book> books = findAllBooks();
+		return books.stream().sorted(Comparator.comparing(Book::getPrice)).collect(Collectors.toList());
+	}
 
 	public List<Book> sortBooksByName() {
 		List<Book> books = findAllBooks();
