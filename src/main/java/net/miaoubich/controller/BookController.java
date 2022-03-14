@@ -2,6 +2,7 @@ package net.miaoubich.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -77,4 +78,15 @@ public class BookController {
 		return new ResponseEntity<List<Book>>(books, HttpStatus.FOUND);
 	}
 
+	@GetMapping("/booksByPrice")
+	public ResponseEntity<List<Book>> booksListByPrice(@RequestParam (value = "price", required = false) Double price){
+		List<Book> books = bookService.booksByPriceLimit(price);
+		return new ResponseEntity<List<Book>>(books, HttpStatus.FOUND);
+	}
+	
+	@GetMapping("/cheapest-book")
+	public ResponseEntity<Optional<Book>> cheapestBook(){
+		Optional<Book> books = bookService.getTheCheapestBook();
+		return new ResponseEntity<Optional<Book>>(books, HttpStatus.FOUND);
+	}
 }

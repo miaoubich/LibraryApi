@@ -117,22 +117,14 @@ public class BookService {
 	 * r) .filter(r->r.getRate()==5) .collect(Collectors.toList());
 	 */
 
-	public List<Book> getReviewsList() {
-		Double i = (double) 5;
-		System.out.println("Before books stream:");
-		List<Book> books = bookRepository.findAll().stream()
-				.filter(o -> o.getReviews().stream().anyMatch(p -> p.getRate().equals(i))).collect(Collectors.toList());
-
-		return books;
-	}
-
 	public List<Book> booksByPriceLimit(Double price) {
 		List<Book> books = findAllBooks();
-		return books.stream().filter(b -> b.getPrice() < price).collect(Collectors.toList());
+		return books.stream().filter(b -> b.getPrice() <= price).collect(Collectors.toList());
 	}
 
 	public Optional<Book> getTheCheapestBook() {
 		List<Book> books = findAllBooks();
 		return books.stream().min(Comparator.comparing(Book::getPrice));
 	}
+	
 }
