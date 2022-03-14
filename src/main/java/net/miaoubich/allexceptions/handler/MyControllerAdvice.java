@@ -1,4 +1,4 @@
-package net.miaoubich.controller.advice;
+package net.miaoubich.allexceptions.handler;
 
 import java.util.NoSuchElementException;
 
@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import net.miaoubich.exception.BusinessException;
-import net.miaoubich.exception.StoreIsEmptyException;
+import net.miaoubich.custom.exception.EmpltyFieldsException;
+import net.miaoubich.custom.exception.StoreIsEmptyException;
 
 @ControllerAdvice
 public class MyControllerAdvice extends ResponseEntityExceptionHandler {
 
-	@ExceptionHandler(BusinessException.class)
-	public ResponseEntity<String> handleEmptyFields(BusinessException businessException) {
+	@ExceptionHandler(EmpltyFieldsException.class)
+	public ResponseEntity<String> handleEmptyFields(EmpltyFieldsException businessException) {
 		return new ResponseEntity<String>("Fields are mandatory, Please fill them up", HttpStatus.BAD_REQUEST);
 	}
 	

@@ -42,7 +42,7 @@ public class BookController {
 
 	@GetMapping("/all")
 	public ResponseEntity<List<Book>> getAllBooks() {
-		List<Book> findAllBooks = bookService.findAll();
+		List<Book> findAllBooks = bookService.findAllBooks();
 		return new ResponseEntity<List<Book>>(findAllBooks, HttpStatus.FOUND);
 	}
 
@@ -70,4 +70,11 @@ public class BookController {
 		List<Book> books = bookService.getBooksByAuthorNameAndPrince(author, price);
 		return books;
 	}
+	
+	@GetMapping("/booksByRate")
+	public ResponseEntity<List<Book>> booksByRate(@RequestParam(value = "rate", required = false) Double rate){
+		List<Book> books = bookService.obtainBooksByRate(rate);
+		return new ResponseEntity<List<Book>>(books, HttpStatus.FOUND);
+	}
+
 }

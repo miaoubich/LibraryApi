@@ -13,8 +13,8 @@ import org.springframework.data.util.ReflectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import net.miaoubich.exception.BusinessException;
-import net.miaoubich.exception.StoreIsEmptyException;
+import net.miaoubich.custom.exception.EmpltyFieldsException;
+import net.miaoubich.custom.exception.StoreIsEmptyException;
 import net.miaoubich.model.Book;
 import net.miaoubich.repository.BookRepository;
 
@@ -27,7 +27,7 @@ public class BookService {
 	public Book upsertBook(Book book) {
 
 		if (book.getBookName().isEmpty() || book.getAuthor().isEmpty() || book.getReviews().isEmpty())
-			throw new BusinessException(HttpStatus.BAD_REQUEST, "Fields are mandatory!");
+			throw new EmpltyFieldsException(HttpStatus.BAD_REQUEST, "Fields are mandatory!");
 
 		if (book.getPrice() <= 0)
 			throw new IllegalArgumentException();
@@ -49,7 +49,7 @@ public class BookService {
 			throw new NoSuchElementException();
 	}
 
-	public List<Book> findAll() {
+	public List<Book> findAllBooks() {
 		List<Book> books = bookRepository.findAll();
 		if (books.size() != 0)
 			return books;
@@ -79,41 +79,60 @@ public class BookService {
 			throw new NoSuchElementException();
 		return existBook;
 	}
-	
-	public Map<String, List<Book>> groupBooksByAuthor(){
-		List<Book> books = findAll();
+
+	public Map<String, List<Book>> groupBooksByAuthor() {
+		List<Book> books = findAllBooks();
 		return books.stream().collect(Collectors.groupingBy(Book::getAuthor));
 	}
-	
-	public List<Book> getBooksByAuthorNameAndPrince(String author,Double price){
-		List<Book> books = findAll();
-		List<Book> booksByAuthorPrice = books.stream().filter(b->b.getAuthor().equalsIgnoreCase(author))
-				             .filter(b->b.getPrice()<price)
-				             .collect(Collectors.toList());
-		if(!booksByAuthorPrice.isEmpty())
+
+	public List<Book> getBooksByAuthorNameAndPrince(String author, Double price) {
+		List<Book> books = findAllBooks();
+		List<Book> booksByAuthorPrice = books.stream().filter(b -> b.getAuthor().equalsIgnoreCase(author))
+				.filter(b -> b.getPrice() < price).collect(Collectors.toList());
+		if (!booksByAuthorPrice.isEmpty())
 			return booksByAuthorPrice;
-		else if(booksByAuthorPrice.isEmpty()) 
+		else if (booksByAuthorPrice.isEmpty())
 			throw new NoSuchElementException();
 		else
 			throw new NullPointerException();
 	}
-	
-	public List<Book> obtainBooksWithHighestRate(){
-		List<Book> books = findAll();
-		return books.stream()
-				    .filter(b->b.getReviews()
-							    .stream()
-							    .anyMatch(r->r.getRate()==5))
-							    .collect(Collectors.toList());
+
+	public List<Book> obtainBooksByRate(Double rate) {
+		if (rate != 0) {
+			List<Book> books = bookRepository.findAll().stream()
+					.filter(b -> b.getReviews().stream().anyMatch(r -> r.getRate().equals(rate)))
+					.collect(Collectors.toList());
+
+			if (!books.isEmpty())
+				return books;
+			else if (books.isEmpty())
+				throw new NoSuchElementException();
+		}
+		throw new NullPointerException();
 	}
-	
-	public List<Book> booksByPriceLimit(Double price){
-		List<Book> books = findAll();
-		return books.stream().filter(b->b.getPrice()<price).collect(Collectors.toList());
+
+	/*
+	 * List<Review> reviews = findAllBooks().stream() .map(b ->
+	 * b.getReviews().stream()).collect(Collectors.toList()) .stream().flatMap(r ->
+	 * r) .filter(r->r.getRate()==5) .collect(Collectors.toList());
+	 */
+
+	public List<Book> getReviewsList() {
+		Double i = (double) 5;
+		System.out.println("Before books stream:");
+		List<Book> books = bookRepository.findAll().stream()
+				.filter(o -> o.getReviews().stream().anyMatch(p -> p.getRate().equals(i))).collect(Collectors.toList());
+
+		return books;
 	}
-	
-	public Optional<Book> getTheCheapestBook(){
-		List<Book> books = findAll();
+
+	public List<Book> booksByPriceLimit(Double price) {
+		List<Book> books = findAllBooks();
+		return books.stream().filter(b -> b.getPrice() < price).collect(Collectors.toList());
+	}
+
+	public Optional<Book> getTheCheapestBook() {
+		List<Book> books = findAllBooks();
 		return books.stream().min(Comparator.comparing(Book::getPrice));
 	}
 }

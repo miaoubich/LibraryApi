@@ -1,8 +1,8 @@
-package net.miaoubich.exception;
+package net.miaoubich.custom.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class StoreIsEmptyException extends RuntimeException {
+public class EmpltyFieldsException extends RuntimeException {
 
 	/**
 	 * 
@@ -11,7 +11,7 @@ public class StoreIsEmptyException extends RuntimeException {
 	private HttpStatus statusCode;
 	private String errorMessage;
 	
-	public StoreIsEmptyException(HttpStatus statusCode, String errorMessage) {
+	public EmpltyFieldsException(HttpStatus statusCode, String errorMessage) {
 		super();
 		this.statusCode = statusCode;
 		this.errorMessage = errorMessage;
