@@ -66,7 +66,7 @@ public class BookController {
 
 	@GetMapping("/booksByAuthorNameAndPrice")
 	public List<Book> booksByAUthorAndPrice(@RequestParam(value = "authorName") String author, 
-										    @RequestParam(value = "price") Double price) {
+										    @RequestParam(value = "price", required = false) Double price) {
 		List<Book> books = bookService.getBooksByAuthorNameAndPrince(author, price);
 		return books;
 	}

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import net.miaoubich.exception.BusinessException;
 import net.miaoubich.exception.StoreIsEmptyException;
 import net.miaoubich.model.Book;
-import net.miaoubich.model.Review;
 import net.miaoubich.repository.BookRepository;
 
 @Service
@@ -88,9 +87,15 @@ public class BookService {
 	
 	public List<Book> getBooksByAuthorNameAndPrince(String author,Double price){
 		List<Book> books = findAll();
-		return books.stream().filter(b->b.getAuthor().equalsIgnoreCase(author))
+		List<Book> booksByAuthorPrice = books.stream().filter(b->b.getAuthor().equalsIgnoreCase(author))
 				             .filter(b->b.getPrice()<price)
 				             .collect(Collectors.toList());
+		if(!booksByAuthorPrice.isEmpty())
+			return booksByAuthorPrice;
+		else if(booksByAuthorPrice.isEmpty()) 
+			throw new NoSuchElementException();
+		else
+			throw new NullPointerException();
 	}
 	
 	public List<Book> obtainBooksWithHighestRate(){
@@ -102,9 +107,9 @@ public class BookService {
 							    .collect(Collectors.toList());
 	}
 	
-	public List<Book> booksLessThan100(){
+	public List<Book> booksByPriceLimit(Double price){
 		List<Book> books = findAll();
-		return books.stream().filter(b->b.getPrice()<100).collect(Collectors.toList());
+		return books.stream().filter(b->b.getPrice()<price).collect(Collectors.toList());
 	}
 	
 	public Optional<Book> getTheCheapestBook(){

@@ -43,4 +43,9 @@ public class MyControllerAdvice extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<Object>("Please check if you're using the appropriate request method.",
 				HttpStatus.METHOD_NOT_ALLOWED);
 	}
+	
+	@ExceptionHandler(NullPointerException.class)
+	public ResponseEntity<String> handleNullPointerException(NullPointerException nullPointerException){
+		return new ResponseEntity<String>("Please be sure to set the parameters values in the URI.", HttpStatus.BAD_REQUEST);
+	}
 }
