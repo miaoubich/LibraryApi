@@ -127,9 +127,9 @@ public class BookController {
 	}
 
 	@GetMapping("/bookName-by-reviews")
-	public ResponseEntity<Map<Object, Object>> bookNameByReviews() {
-		Map<Object, Object> books = bookService.linkBookToReviews();
-		return new ResponseEntity<Map<Object, Object>>(books, HttpStatus.OK);
+	public ResponseEntity<Map<String, Object>> bookNameByReviews() {
+		Map<String, Object> books = bookService.linkBookToReviews();
+		return new ResponseEntity<Map<String, Object>>(books, HttpStatus.OK);
 	}
 	
 	@GetMapping("/bookName-by-rate")

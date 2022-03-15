@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import net.miaoubich.custom.exception.EmpltyFieldsException;
 import net.miaoubich.custom.exception.StoreIsEmptyException;
 import net.miaoubich.model.Book;
+import net.miaoubich.model.Review;
 import net.miaoubich.repository.BookRepository;
 
 @Service
@@ -136,7 +137,7 @@ public class BookService {
 
 	public Double averageBooksPrice() {
 		List<Book> books = findAllBooks();
-		Double averagePrice = books.stream().map(b -> b.getPrice()).collect(Collectors.toList()).stream()
+		Double averagePrice = books.stream().map(Book::getPrice).collect(Collectors.toList()).stream()
 				.mapToDouble(p -> p).average().getAsDouble();
 
 		return averagePrice;
@@ -144,7 +145,7 @@ public class BookService {
 
 	public String getStaticsFigures() {
 		List<Book> books = findAllBooks();
-		DoubleSummaryStatistics staticsFigures = books.stream().map(p -> p.getPrice()).collect(Collectors.toList())
+		DoubleSummaryStatistics staticsFigures = books.stream().map(Book::getPrice).collect(Collectors.toList())
 				.stream().mapToDouble(a -> a).summaryStatistics();
 
 		return "Count: " + staticsFigures.getCount() + ", Price Average: " + staticsFigures.getAverage()
@@ -184,10 +185,10 @@ public class BookService {
 	}
 
 	// Map bookName to its reviews titles
-	public Map<Object, Object> linkBookToReviews() {
+	public Map<String, Object> linkBookToReviews() {
 		List<Book> books = getBooksWithReviews();
-		Map<Object, Object> bookNameToReviews = books.stream().collect(
-				Collectors.toMap(b -> b.getBookName(), b -> b.getReviews().stream().map(r -> r.getReviewTitle())));
+		Map<String, Object> bookNameToReviews = books.stream().collect(
+				Collectors.toMap(Book::getBookName, b -> b.getReviews().stream().map(Review::getReviewTitle)));
 
 		return bookNameToReviews;
 	}
@@ -195,7 +196,7 @@ public class BookService {
 	public Map<Object, Object> bookNameLinkedToRate() {
 		List<Book> books = getBooksWithReviews();
 		Map<Object, Object> bookToRate = books.stream().collect(
-				Collectors.toMap(b -> b.getBookName(), b -> b.getReviews().parallelStream().map(r -> r.getRate())));
+				Collectors.toMap(Book::getBookName, b -> b.getReviews().parallelStream().map(Review::getRate)));
 
 		return bookToRate;
 	}
