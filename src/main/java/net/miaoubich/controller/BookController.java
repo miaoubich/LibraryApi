@@ -137,4 +137,10 @@ public class BookController {
 		Map<Object, Object> books = bookService.bookNameLinkedToRate();
 		return new ResponseEntity<Map<Object, Object>>(books, HttpStatus.OK);
 	}
+	
+	@GetMapping("/books-groupedby-price")
+	public ResponseEntity<Map<Double, List<Book>>> getBooksGroupedByPrice(){
+		Map<Double, List<Book>> books = bookService.groupBooksByPrice();
+		return new ResponseEntity<Map<Double, List<Book>>>(books, HttpStatus.OK);
+	}
 }

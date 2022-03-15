@@ -199,4 +199,11 @@ public class BookService {
 
 		return bookToRate;
 	}
+	
+	public Map<Double, List<Book>> groupBooksByPrice(){
+		List<Book> books = findAllBooks();
+		Map<Double, List<Book>> booksByPrice = books.stream().collect(Collectors.groupingBy(Book::getPrice));
+		
+		return booksByPrice;
+	}
 }
