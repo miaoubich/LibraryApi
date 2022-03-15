@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import net.miaoubich.custom.exception.EmpltyFieldsException;
 import net.miaoubich.custom.exception.StoreIsEmptyException;
 import net.miaoubich.model.Book;
-import net.miaoubich.model.Review;
 import net.miaoubich.repository.BookRepository;
 
 @Service
@@ -187,9 +186,17 @@ public class BookService {
 	// Map bookName to its reviews titles
 	public Map<Object, Object> linkBookToReviews() {
 		List<Book> books = getBooksWithReviews();
-		Map<Object, Object> bookNameToReviews = books.stream()
-				.collect(Collectors.toMap(b -> b.getBookName(), b -> b.getReviews().stream().map(r->r.getReviewTitle())));
+		Map<Object, Object> bookNameToReviews = books.stream().collect(
+				Collectors.toMap(b -> b.getBookName(), b -> b.getReviews().stream().map(r -> r.getReviewTitle())));
 
 		return bookNameToReviews;
+	}
+
+	public Map<Object, Object> bookNameLinkedToRate() {
+		List<Book> books = getBooksWithReviews();
+		Map<Object, Object> bookToRate = books.stream().collect(
+				Collectors.toMap(b -> b.getBookName(), b -> b.getReviews().parallelStream().map(r -> r.getRate())));
+
+		return bookToRate;
 	}
 }
