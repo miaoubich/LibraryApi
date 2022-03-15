@@ -3,6 +3,7 @@ package net.miaoubich.service;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import net.miaoubich.custom.exception.EmpltyFieldsException;
 import net.miaoubich.custom.exception.StoreIsEmptyException;
 import net.miaoubich.model.Book;
+import net.miaoubich.model.Review;
 import net.miaoubich.repository.BookRepository;
 
 @Service
@@ -128,6 +130,29 @@ public class BookService {
 		return books.stream().min(Comparator.comparing(Book::getPrice));
 	}
 
+	public Optional<Book> mostExpensiveBook() {
+		List<Book> books = findAllBooks();
+		return books.stream().max(Comparator.comparing(Book::getPrice));
+	}
+
+	public Double averageBooksPrice() {
+		List<Book> books = findAllBooks();
+		Double averagePrice = books.stream().map(b -> b.getPrice()).collect(Collectors.toList()).stream()
+				.mapToDouble(p -> p).average().getAsDouble();
+
+		return averagePrice;
+	}
+
+	public String getStaticsFigures() {
+		List<Book> books = findAllBooks();
+		DoubleSummaryStatistics staticsFigures = books.stream().map(p -> p.getPrice()).collect(Collectors.toList())
+				.stream().mapToDouble(a -> a).summaryStatistics();
+
+		return "Count: " + staticsFigures.getCount() + ", Price Average: " + staticsFigures.getAverage()
+				+ ", Price Max: " + staticsFigures.getMax() + ", Price Min: " + staticsFigures.getMin()
+				+ ", Prices Sum: " + staticsFigures.getSum();
+	}
+
 	public List<Book> sortBooksByPrice() {
 		List<Book> books = findAllBooks();
 		Collections.sort(books, (b1, b2) -> {
@@ -135,10 +160,10 @@ public class BookService {
 		});
 		return books;
 	}
-	
+
 	public List<Book> sortBooksByPrice2() {
 		List<Book> books = findAllBooks();
-		return books.stream().sorted(Comparator.comparing(Book::getPrice)).collect(Collectors.toList());
+		return books.stream().sorted(Comparator.comparing(Book::getPrice)).limit(4).collect(Collectors.toList());
 	}
 
 	public List<Book> sortBooksByName() {
@@ -147,5 +172,24 @@ public class BookService {
 			return b1.getBookName().compareTo(b2.getBookName());
 		});
 		return books;
+	}
+
+	public List<Book> getBooksWithReviews() {
+		List<Book> books = findAllBooks();
+		return books.stream().filter(b -> b.getReviews().size() != 0).collect(Collectors.toList());
+	}
+
+	public List<Book> getBooksWithNoReview() {
+		List<Book> books = findAllBooks();
+		return books.stream().filter(b -> b.getReviews().isEmpty()).collect(Collectors.toList());
+	}
+
+	// Map bookName to its reviews titles
+	public Map<Object, Object> linkBookToReviews() {
+		List<Book> books = getBooksWithReviews();
+		Map<Object, Object> bookNameToReviews = books.stream()
+				.collect(Collectors.toMap(b -> b.getBookName(), b -> b.getReviews().stream().map(r->r.getReviewTitle())));
+
+		return bookNameToReviews;
 	}
 }

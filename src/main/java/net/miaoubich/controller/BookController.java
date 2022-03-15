@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.miaoubich.model.Book;
+import net.miaoubich.model.Review;
 import net.miaoubich.service.BookService;
 
 @RestController
@@ -91,8 +92,8 @@ public class BookController {
 	}
 	
 	@GetMapping("/sort-byPrice")
-	public ResponseEntity<List<Book>> sortBooksByPrice2(){
-		List<Book> books = bookService.sortBooksByPrice();
+	public ResponseEntity<List<Book>> sortBooksByPrice(){
+		List<Book> books = bookService.sortBooksByPrice2();
 		return new ResponseEntity<List<Book>>(books, HttpStatus.FOUND);
 	}
 	
@@ -100,5 +101,35 @@ public class BookController {
 	public ResponseEntity<List<Book>> sortBooksByBookName(){
 		List<Book> books = bookService.sortBooksByName();
 		return new ResponseEntity<List<Book>>(books, HttpStatus.FOUND);
+	}
+	
+	@GetMapping("/book-with-noReview")
+	public ResponseEntity<List<Book>> booksWithNoReview(){
+		List<Book> books = bookService.getBooksWithNoReview();
+		return new ResponseEntity<List<Book>>(books, HttpStatus.FOUND);
+	}
+	
+	@GetMapping("/book-with-review")
+	public ResponseEntity<List<Book>> booksWithReview(){
+		List<Book> books = bookService.getBooksWithReviews();
+		return new ResponseEntity<List<Book>>(books, HttpStatus.FOUND);
+	}
+	
+	@GetMapping("/average-price")
+	public ResponseEntity<Double> averageBooksPrice() {
+		Double averagePrice = bookService.averageBooksPrice();	
+		return new ResponseEntity<Double>(averagePrice, HttpStatus.OK);
+	}
+	
+	@GetMapping ("/statistics-figures")
+	public ResponseEntity<String> getStatisticsFigures(){
+		String statisticsFigures = bookService.getStaticsFigures();
+		return new ResponseEntity<String>(statisticsFigures, HttpStatus.OK);
+	}
+	
+	@GetMapping("/bookName-by-reviews")
+	public ResponseEntity<Map<Object, Object>> bookNameByReviews(){
+		Map<Object, Object> books = bookService.linkBookToReviews();
+		return new ResponseEntity<Map<Object, Object>>(books, HttpStatus.OK);
 	}
 }
